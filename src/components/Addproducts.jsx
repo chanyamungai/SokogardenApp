@@ -44,6 +44,13 @@ const Addproducts = () => {
     setProductDescription("")
     setProductCost("")
     setProductPhoto("")
+    
+    // clearing file input value
+    e.target.reset()
+
+    setTimeout(() => {
+        setSuccess("");
+      }, 5000);
 
   }
   catch(error){
