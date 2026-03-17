@@ -1,23 +1,77 @@
+import axios from 'axios';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 
 const Signup = () => {
   // Intialize the hooks 
-  const [username,Setusername] = useState("");
-  const[email,SetEmail] = useState("");
-  const[password,SetPassword] = useState("")
-  const[phone,SetPhone]= useState("")
+  const [username,setUsername] = useState("");
+  const[email,setEmail] = useState("");
+  const[password,setPassword] = useState("")
+  const[phone,setPhone]= useState("")
+
+  // Define the three states an application wil move to
+  const [loading,setLoading] =useState("");
+  const[success,setSuccess] =useState("");
+  const[error,setError]= useState("");
+
+  // Below is a function that will handle the submit action
+  const handleSubmit =async(e) =>{
+    // Below we prevent our site from reloading
+    e.preventDefault()
+
+    // Update our loading hook that wil be dispalyed to the user that are tring to register 
+    setLoading("Please wait as registration is in progress....")
+
+    try{
+      // Create a form data object that will enable you to capture the four details entered on the form
+      const formdata =new FormData();
+
+      // Insert the four details(username,email,password,phone) in terms of key value pairs
+      formdata.append("username",username);
+      formdata.append("email",email);
+      formdata.append("password",password);
+      formdata.append("phone",phone);
+
+      // By use of axios we can access the method Post
+      const response=await axios.post("https://chanyamungai.alwaysdata.net/api/signup",formdata)
+
+      // set back the loading hook to empty
+      setLoading("")
+
+      // Just incase everything goes well update the success hook with a message
+      setSuccess(response.data.message)
+
+      // Clear your hooks 
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setPhone("");
+    }
+    catch(error){
+      // set the loading hook back to default 
+      setLoading("")
+
+      // Update the error hook with the message given back from the response
+      setError(error.message)
+
+    }
+  }
+
+
   return (
     <div className='row justify-content-center mt-4'>
       <div className='card col-md-6 shadow p-4 '>
           <h1 className='text-primary'>Signup</h1>
+          <h5 className='text-warning'>{loading}</h5>
+          <h3 className='text-success'>{success}</h3>
+          <h4 className='text-danger'>{error}</h4>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             <input type="text"
             placeholder='Enter the username'
             className='form-control'
             value={username} 
-            onChange={(e) => Setusername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
             required/> <br />
 
             {/* {username} */}
@@ -26,7 +80,7 @@ const Signup = () => {
             placeholder='Enter the email address'
             className='form-control'
             value={email}
-            onChange={(e)=> SetEmail(e.target.value)}
+            onChange={(e)=> setEmail(e.target.value)}
             required/> <br />
 
             {/* {email} */}
@@ -35,7 +89,7 @@ const Signup = () => {
             placeholder='Enter the password'
             className='form-control'
             value={password} 
-            onChange={(e) => SetPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required/> <br />
 
             {/* {password} */}
@@ -44,11 +98,11 @@ const Signup = () => {
             placeholder='Enter the phone number'
             className='form-control'
             value={phone} 
-            onChange={(e) => SetPhone(e.target.value)}/> <br />
+            onChange={(e) => setPhone(e.target.value)}/> <br />
 
             {/* {phone} */}
 
-            <input type="button" value="Signup" className='btn btn-primary'/>
+            <input type="submit" value="Signup" className='btn btn-primary'/>
             <br /> <br />
 
             Already have an account<Link to={'/signin'}>Signin</Link>
@@ -64,3 +118,8 @@ const Signup = () => {
 export default Signup;
 
 // Research on Axios module in ReactJs
+// Axios is a popular JavaScript library used to make HTTP requests from a browser or Node.js
+// In React, Axios is commonly used to communicate with APIs (Application Programming Interfaces) to fetch, send, update, or delete data.
+// To install axios we use npm install axios
+// After installation we need to import  import axios from "axios";
+// Axios method supports http methods when working with APIs
